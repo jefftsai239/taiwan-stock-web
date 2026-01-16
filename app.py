@@ -9,9 +9,17 @@ target_stock = stock_id + '.TW'
 
 # 抓取最近三個月的數據，畫 K 線圖會比較清楚
 df = yf.Ticker(target_stock).history(period='3mo')
-# 計算 5 日與 20 日均線
-df['MA5'] = df['Close'].rolling(window=5).mean()
-df['MA20'] = df['Close'].rolling(window=20).mean()
+# 在側邊欄建立滑桿
+st.sidebar.header('設定參數')
+ma_short = st.sidebar.slider('短期均線 (MA)', min_value=2, max_value=60, value=5)
+ma_long = st.sidebar.slider('長期均線 (MA)', min_value=10, max_value=240, value=20)
+# 使用變數計算 MA
+df['MA_S'] = df['Close'].rolling(window=ma_short).mean()
+df['MA_L'] = df['Close'].rolling(window=ma_long).mean()
+
+# 修改 fig.add_trace 的部分
+fig.add_trace(go.Scatter(x=df.index, y=df['MA_S'], name=f'{ma_short}MA', line=dict(color='orange', width=1)))
+fig.add_trace(go.Scatter(x=df.index, y=df['MA_L'], name=f'{ma_long}MA', line=dict(color='blue', width=1)))
 
 # 建立 K 線圖物件
 # 建立 K 線圖
