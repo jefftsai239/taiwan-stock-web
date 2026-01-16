@@ -24,7 +24,9 @@ fig = go.Figure(data=[go.Candlestick(
     x=df.index,
     open=df['Open'], high=df['High'],
     low=df['Low'], close=df['Close'],
-    name='K線'
+    name='K線',
+    increasing_line_color='red', # 漲設定為紅 🔴
+    decreasing_line_color='blue'  # 跌設定為藍 🔵
 )])
 
 # 5. 加入動態均線
