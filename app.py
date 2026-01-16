@@ -9,17 +9,24 @@ target_stock = stock_id + '.TW'
 
 # 抓取最近三個月的數據，畫 K 線圖會比較清楚
 df = yf.Ticker(target_stock).history(period='3mo')
+# 計算 5 日與 20 日均線
+df['MA5'] = df['Close'].rolling(window=5).mean()
+df['MA20'] = df['Close'].rolling(window=20).mean()
 
 # 建立 K 線圖物件
+# 建立 K 線圖
 fig = go.Figure(data=[go.Candlestick(
     x=df.index,
-    open=df['Open'],
-    high=df['High'],
-    low=df['Low'],
-    close=df['Close'],
-    increasing_line_color='red', # 台灣習慣漲為紅
-    decreasing_line_color='green' # 台灣習慣跌為綠
+    open=df['Open'], high=df['High'],
+    low=df['Low'], close=df['Close'],
+    name='K線'
 )])
+
+# 加入 MA5 條線
+fig.add_trace(go.Scatter(x=df.index, y=df['MA5'], name='5MA', line=dict(color='orange', width=1)))
+
+# 加入 MA20 條線
+fig.add_trace(go.Scatter(x=df.index, y=df['MA20'], name='20MA', line=dict(color='blue', width=1)))
 
 # 設定圖表標題與手機適應性
 fig.update_layout(
