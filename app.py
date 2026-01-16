@@ -18,6 +18,25 @@ df = yf.Ticker(target_stock).history(period='1y') # 改成 1y 才有足夠數據
 # 3. 計算 MA
 df['MA_S'] = df['Close'].rolling(window=ma_short).mean()
 df['MA_L'] = df['Close'].rolling(window=ma_long).mean()
+# 取得最後兩筆數據
+latest_df = df.tail(2)
+
+if len(latest_df) >= 2:
+    # 今天的收盤價
+    current_price = round(latest_df['Close'].iloc[-1], 2)
+    # 昨天的收盤價
+    prev_price = round(latest_df['Close'].iloc[-2], 2)
+    
+    # 計算漲跌與百分比
+    price_diff = round(current_price - prev_price, 2)
+    price_pct = round((price_diff / prev_price) * 100, 2)
+
+    # 2. 顯示資訊卡 (放在標題下方)
+    col1, col2, col3 = st.columns(3) # 將畫面分成三欄
+    with col1:
+        st.metric(label="當前股價", value=f"{current_price} TWD", delta=f"{price_diff} ({price_pct}%)")
+else:
+    st.warning("數據量不足，無法顯示即時資訊卡。")
 
 # 4. 繪製 K 線圖
 fig = go.Figure(data=[go.Candlestick(
