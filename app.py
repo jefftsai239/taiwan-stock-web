@@ -56,14 +56,21 @@ st.plotly_chart(fig, use_container_width=True)
 st.divider() # 加一條分隔線
 st.subheader('📰 相關新聞')
 
-# 抓取新聞
+st.divider()
+st.subheader('📰 相關新聞')
+
+# 取得新聞列表
 news = yf.Ticker(target_stock).news
 
 if news:
-    for item in news[:5]: # 只顯示最近 5 則
-        # 顯示標題，並做成超連結
-        st.markdown(f"**[{item['title']}]({item['link']})**")
-        # 顯示來源與時間 (轉換時間戳記)
-        st.caption(f"來源: {item['publisher']} | 類型: {item['type']}")
+    for item in news[:5]:
+        # 使用 .get() 來安全地取得欄位，如果找不到就給預設值
+        title = item.get('title', '無標題')
+        link = item.get('link') or item.get('url') or "#" # 嘗試不同的網址欄位
+        publisher = item.get('publisher', '未知來源')
+        
+        # 顯示標題與連結
+        st.markdown(f"**[{title}]({link})**")
+        st.caption(f"來源: {publisher}")
 else:
     st.write("目前沒有相關新聞。")
