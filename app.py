@@ -53,11 +53,6 @@ fig.add_trace(go.Scatter(x=df.index, y=df['MA_S'], name=f'{ma_short}MA', line=di
 fig.add_trace(go.Scatter(x=df.index, y=df['MA_L'], name=f'{ma_long}MA', line=dict(color='blue', width=1)))
 
 st.plotly_chart(fig, use_container_width=True)
-st.divider() # 加一條分隔線
-st.subheader('📰 相關新聞')
-
-st.divider()
-st.subheader('📰 相關新聞')
 
 # 取得新聞列表
 st.divider()
