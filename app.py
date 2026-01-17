@@ -60,6 +60,8 @@ st.divider()
 st.subheader('📰 相關新聞')
 
 # 取得新聞列表
+# 在 app.py 的新聞區塊加入這行
+st.write(news[0]) # 顯示第一則新聞的原始 JSON 格式
 news = yf.Ticker(target_stock).news
 
 if news:
