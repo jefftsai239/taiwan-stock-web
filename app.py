@@ -60,20 +60,26 @@ st.divider()
 st.subheader('📰 相關新聞')
 
 # 取得新聞列表
-# 在 app.py 的新聞區塊加入這行
+st.divider()
+st.subheader('📰 相關新聞')
 
-news = yf.Ticker(target_stock).news
+# 取得原始資料
+news_list = yf.Ticker(target_stock).news
 
-if news:
-    for item in news[:5]:
-        # 使用 .get() 來安全地取得欄位，如果找不到就給預設值
-        title = item.get('title', '無標題')
-        link = item.get('link') or item.get('url') or "#" # 嘗試不同的網址欄位
-        publisher = item.get('publisher', '未知來源')
+if news_list:
+    for item in news_list[:5]:
+        # 根據你提供的 JSON 結構進行層層抓取
+        content = item.get('content', {})
+        title = content.get('title', '無標題')
         
+        # 抓取連結：先找 canonicalUrl，沒有再找 clickThroughUrl
+        link_info = content.get('canonicalUrl', {})
+        link = link_info.get('url') or content.get('clickThroughUrl', {}).get('url', '#')
+        
+        provider = content.get('provider', {}).get('displayName', '未知來源')
+
         # 顯示標題與連結
         st.markdown(f"**[{title}]({link})**")
-        st.caption(f"來源: {publisher}")
+        st.caption(f"來源: {provider}")
 else:
     st.write("目前沒有相關新聞。")
-st.write(news[0]) # 顯示第一則新聞的原始 JSON 格式
