@@ -53,3 +53,17 @@ fig.add_trace(go.Scatter(x=df.index, y=df['MA_S'], name=f'{ma_short}MA', line=di
 fig.add_trace(go.Scatter(x=df.index, y=df['MA_L'], name=f'{ma_long}MA', line=dict(color='blue', width=1)))
 
 st.plotly_chart(fig, use_container_width=True)
+st.divider() # 加一條分隔線
+st.subheader('📰 相關新聞')
+
+# 抓取新聞
+news = yf.Ticker(target_stock).news
+
+if news:
+    for item in news[:5]: # 只顯示最近 5 則
+        # 顯示標題，並做成超連結
+        st.markdown(f"**[{item['title']}]({item['link']})**")
+        # 顯示來源與時間 (轉換時間戳記)
+        st.caption(f"來源: {item['publisher']} | 類型: {item['type']}")
+else:
+    st.write("目前沒有相關新聞。")
